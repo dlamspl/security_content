@@ -80,7 +80,7 @@ def enrich_detection_file(file, ta_list):
 def main():
 
     parser = argparse.ArgumentParser(description="Enrich detections with relevant TA names")
-    parser.add_argument("-scr", "--security_content_repo", required=False, default="kirtankhatana-crest/security_content",
+    parser.add_argument("-scr", "--security_content_repo", required=False, default="splunk/security_content",
                         help="specify the url of the security content repository")
     parser.add_argument("-scb", "--security_content_branch", required=False, default="develop",
                         help="specify the security content branch")
