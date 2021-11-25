@@ -37,36 +37,8 @@ def load_file(file_path):
 
 
 def map_required_fields(cim_summary, required_fields):
-    # datasets_fields = {}
-    # add_addon = True
-    # flag = 0
-    # for item in required_fields:
-    #     if item == '_time' or item == '_times':
-    #         continue
-    #     else:
-    #         dataset_field = item.split(".")
-    #         length = len(datasets_fields)
-    #         if len(dataset_field) == 1 :
-    #             return False
-    #         dataset = dataset_field[0]
-    #         field = dataset_field[1]
-    #         if dataset not in datasets_fields:
-    #             datasets_fields[dataset] = []
-    #         datasets_fields[dataset].append(field)
-
-    # for dataset in datasets_fields:
-    #     flag = 0
-    #     for item in cim_summary:
-    #         if dataset in item:
-    #             flag = 1
-    #             for eventtype in cim_summary[item].values():
-    #                 for e_type in eventtype:
-    #                     cim_fields = e_type.get('fields', [])
-    #                     if not set(datasets_fields[dataset]).issubset(set(cim_fields)):
-    #                         add_addon = False
-    # if not flag:
-    #     add_addon = False
-    # return add_addon
+    #maps required fields of detection with ta-cim-mapping fields
+    
     addon_fields_set = set()
     required_fields_set = set()
     for item in required_fields:
@@ -131,15 +103,12 @@ def main():
 
     ta_cim_field_reports_obj  = git.Repo.clone_from('https://' + github_token + ':x-oauth-basic@github.com/' + "splunk/ta-cim-field-reports", "ta_cim_mapping_reports", branch="feat/cim-field-mapping")
     # iterate through every detection files
-    print(os.getcwd())
     for detection_type in detection_types:
 
         for subdir, _, files in os.walk(f'security_content/detections/{detection_type}'):
-            print(subdir)
             for file in files:
                 filepath = subdir + os.sep + file
                 ta_list = []
-                print(file)
                 detection_obj = load_file(filepath)
                 required_fields = detection_obj.get('tags', {}).get('required_fields')
 
@@ -153,7 +122,6 @@ def main():
                 if ta_list:
                     enrich_detection_file(filepath, ta_list)
                     security_content_repo_obj.index.add([filepath.strip("security_content/")])
-    print ("done")
 
 
     security_content_repo_obj.index.commit('Updated detection files with supported TA list.')
