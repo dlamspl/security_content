@@ -363,41 +363,42 @@ def add_rba(detection):
     risk_object_user_types = {'user', 'username', 'email address'}
     risk_object_system_types = {'device', 'endpoint', 'hostname', 'ip address'}
     if 'observable' in detection['tags'] and 'risk_score' in detection['tags']:
+        if detection['tags']['observable'] != None:
 
-        # go through each obervable
-        for entity in detection['tags']['observable']:
+            # go through each obervable
+            for entity in detection['tags']['observable']:
 
-            risk_object = dict()
+                risk_object = dict()
 
-            # determine if is a user type, create risk
-            if entity['type'].lower() in risk_object_user_types:
+                # determine if is a user type, create risk
+                if entity['type'].lower() in risk_object_user_types:
 
-                for r in entity['role']:
-                    if 'attacker' == r.lower() or 'victim' ==r.lower():
+                    for r in entity['role']:
+                        if 'attacker' == r.lower() or 'victim' ==r.lower():
 
-                        risk_object['risk_object_type'] = 'user'
-                        risk_object['risk_object_field'] = entity['name']
-                        risk_object['risk_score'] = detection['tags']['risk_score']
+                            risk_object['risk_object_type'] = 'user'
+                            risk_object['risk_object_field'] = entity['name']
+                            risk_object['risk_score'] = detection['tags']['risk_score']
 
-                        risk_objects.append(risk_object)
+                            risk_objects.append(risk_object)
 
-            # determine if is a system type, create risk
-            elif entity['type'].lower() in risk_object_system_types:
+                # determine if is a system type, create risk
+                elif entity['type'].lower() in risk_object_system_types:
 
-                for r in entity['role']:
-                    if 'attacker' == r.lower() or 'victim' ==r.lower():
+                    for r in entity['role']:
+                        if 'attacker' == r.lower() or 'victim' ==r.lower():
 
-                        risk_object['risk_object_type'] = 'system'
-                        risk_object['risk_object_field'] = entity['name']
-                        risk_object['risk_score'] = detection['tags']['risk_score']
-                        risk_objects.append(risk_object)
+                            risk_object['risk_object_type'] = 'system'
+                            risk_object['risk_object_field'] = entity['name']
+                            risk_object['risk_score'] = detection['tags']['risk_score']
+                            risk_objects.append(risk_object)
 
-            # if is not a system or user, it is a threat object
-            else:
-                risk_object['threat_object_field'] = entity['name']
-                risk_object['threat_object_type'] = entity['type'].lower()
-                risk_objects.append(risk_object)
-                continue
+                # if is not a system or user, it is a threat object
+                else:
+                    risk_object['threat_object_field'] = entity['name']
+                    risk_object['threat_object_type'] = entity['type'].lower()
+                    risk_objects.append(risk_object)
+                    continue
 
     detection['risk'] = risk_objects
 
